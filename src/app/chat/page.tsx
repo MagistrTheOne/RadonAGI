@@ -1,0 +1,37 @@
+'use client';
+
+import { useEffect } from 'react';
+import { useChat } from '@/hooks/useChat';
+import { useChatStore } from '@/store/chatStore';
+import { ChatSidebar } from '@/components/chat/ChatSidebar';
+import { ChatHeader } from '@/components/chat/ChatHeader';
+import { ChatMessages } from '@/components/chat/ChatMessages';
+import { ChatInput } from '@/components/chat/ChatInput';
+
+export default function ChatPage() {
+  const { currentChatId } = useChatStore();
+  const { messages, isLoading, error, sendMessage, loadChat } = useChat(currentChatId || undefined);
+
+  // Load chat messages when currentChatId changes
+  useEffect(() => {
+    if (currentChatId) {
+      loadChat(currentChatId);
+    }
+  }, [currentChatId, loadChat]);
+
+  return (
+    <div className="flex h-screen bg-[#0a0a0a] text-white">
+      <ChatSidebar />
+      <main className="flex-1 flex flex-col">
+        <ChatHeader />
+        <ChatMessages messages={messages} isLoading={isLoading} />
+        {error && (
+          <div className="mx-6 mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+            <p className="text-red-400 text-sm">{error}</p>
+          </div>
+        )}
+        <ChatInput onSendMessage={sendMessage} isLoading={isLoading} />
+      </main>
+    </div>
+  );
+}
