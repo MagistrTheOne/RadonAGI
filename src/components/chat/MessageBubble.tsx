@@ -12,36 +12,29 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 
   return (
     <div className={cn(
-      "flex mb-6",
+      "flex gap-4 p-4",
       isUser ? "justify-end" : "justify-start"
     )}>
+      {!isUser && (
+        <div className="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center shrink-0">
+          <span className="text-white text-sm font-bold">R</span>
+        </div>
+      )}
+      
       <div className={cn(
-        "max-w-[80%] rounded-lg p-4",
-        isUser
-          ? "bg-white/8 border border-white/10"
-          : "bg-white/3 border border-white/5"
+        "max-w-[80%]",
+        isUser && "order-first"
       )}>
-        <div className="text-white whitespace-pre-wrap">
+        <div className="text-white whitespace-pre-wrap leading-relaxed">
           {message.content}
         </div>
-        
-        {/* Metadata */}
-        <div className="flex items-center justify-between mt-3 pt-2 border-t border-white/10">
-          <div className="text-xs text-[#a0a0a0]">
-            {message.timestamp.toLocaleTimeString()}
-          </div>
-          {!isUser && (message.tokens || message.generationTime) && (
-            <div className="text-xs text-[#a0a0a0] space-x-2">
-              {message.tokens && (
-                <span>{message.tokens} tokens</span>
-              )}
-              {message.generationTime && (
-                <span>{message.generationTime.toFixed(2)}s</span>
-              )}
-            </div>
-          )}
-        </div>
       </div>
+      
+      {isUser && (
+        <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center shrink-0">
+          <span className="text-white text-sm font-bold">U</span>
+        </div>
+      )}
     </div>
   );
 }

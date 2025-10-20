@@ -37,52 +37,28 @@ export function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
   }, [input]);
 
   return (
-    <div className="border-t border-[#2a2a2a]">
-      {/* Radon AGI Info Panel */}
-      <div className="px-6 py-3 bg-[#1a1a1a] border-b border-[#2a2a2a]">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center justify-between text-sm text-[#a0a0a0]">
-            <div className="flex items-center gap-4">
-              <span className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span>Radon AGI Online</span>
-              </span>
-              <span>•</span>
-              <span>Краснодар, Россия</span>
-              <span>•</span>
-              <span>MagistrTheOne, 2025</span>
-            </div>
-            <div className="text-xs">
-              ⚠️ Упоминание других ИИ может вызвать создателя машин.
-            </div>
+    <div className="border-t border-[#333333] glass">
+      <div className="max-w-3xl mx-auto p-4">
+        <form onSubmit={handleSubmit} className="flex gap-2">
+          <div className="flex-1 relative">
+            <textarea
+              ref={textareaRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Message Radon AGI..."
+              disabled={isLoading}
+              className="w-full glass border-white/20 text-white placeholder:text-[#cccccc] rounded-lg px-4 py-3 resize-none focus:border-white/30 focus:outline-none transition-colors min-h-[44px] max-h-[120px]"
+              rows={1}
+            />
           </div>
-        </div>
-      </div>
-      
-      {/* Chat Input */}
-      <div className="p-6">
-        <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
-          <div className="flex gap-3">
-            <div className="flex-1 relative">
-              <textarea
-                ref={textareaRef}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Message Radon AGI..."
-                disabled={isLoading}
-                className="w-full glass border-[#2a2a2a] text-white placeholder:text-[#a0a0a0] rounded-lg px-4 py-3 pr-12 resize-none focus:border-white/30 focus:outline-none transition-colors min-h-[52px] max-h-[120px]"
-                rows={1}
-              />
-            </div>
-            <Button
-              type="submit"
-              disabled={isLoading || !input.trim()}
-              className="glass border-white/20 text-white hover:bg-white/10 hover:border-white/30 px-4"
-            >
-              <Send className="w-4 h-4" />
-            </Button>
-          </div>
+          <Button
+            type="submit"
+            disabled={isLoading || !input.trim()}
+            className="glass border-white/20 text-white hover:bg-white/10 hover:border-white/30 px-4 py-2 rounded-lg disabled:opacity-50"
+          >
+            <Send className="w-4 h-4" />
+          </Button>
         </form>
       </div>
     </div>

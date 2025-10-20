@@ -6,10 +6,15 @@ import { useChats } from '@/hooks/useChats';
 import { useChatStore } from '@/store/chatStore';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Plus, MessageSquare, Trash2, LogOut } from 'lucide-react';
+import { Plus, MessageSquare, Trash2, LogOut, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export function ChatSidebar() {
+interface ChatSidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export function ChatSidebar({ isOpen = true, onClose }: ChatSidebarProps) {
   const { user } = useUser();
   const { signOut } = useClerk();
   const { chats, createChat, deleteChat } = useChats();
@@ -45,15 +50,13 @@ export function ChatSidebar() {
   };
 
   return (
-    <div className="w-80 glass border-r border-[#2a2a2a] flex flex-col h-full">
+    <div className="w-56 glass border-r border-[#333333] flex flex-col h-full">
       {/* Header */}
-      <div className="p-4 border-b border-[#2a2a2a]">
-        <h1 className="text-xl font-bold text-white mb-4">Radon AGI</h1>
+      <div className="p-3 border-b border-[#333333]">
         <Button
           onClick={handleNewChat}
           disabled={isCreating}
-          variant="outline"
-          className="w-full glass border-white/20 text-white hover:bg-white/10 hover:border-white/30"
+          className="w-full glass border-white/20 text-white hover:bg-white/10 hover:border-white/30 text-sm"
         >
           <Plus className="w-4 h-4 mr-2" />
           {isCreating ? 'Creating...' : 'New Chat'}
@@ -61,21 +64,21 @@ export function ChatSidebar() {
       </div>
 
       {/* Chat List */}
-      <ScrollArea className="flex-1 p-4">
-        <div className="space-y-2">
+      <ScrollArea className="flex-1">
+        <div className="p-2 space-y-1">
           {chats.map((chat) => (
             <div
               key={chat.id}
               onClick={() => handleSelectChat(chat.id)}
               className={cn(
-                "group flex items-center justify-between p-3 rounded-lg cursor-pointer transition-all",
+                "group flex items-center justify-between p-2 rounded-md cursor-pointer transition-all",
                 currentChatId === chat.id
-                  ? "bg-white/10 border border-white/20"
-                  : "hover:bg-white/5 border border-transparent"
+                  ? "bg-white/10"
+                  : "hover:bg-white/5"
               )}
             >
               <div className="flex items-center min-w-0 flex-1">
-                <MessageSquare className="w-4 h-4 mr-3 text-[#a0a0a0] shrink-0" />
+                <MessageSquare className="w-4 h-4 mr-2 text-[#a0a0a0] shrink-0" />
                 <span className="text-white text-sm truncate">
                   {chat.title}
                 </span>
@@ -93,18 +96,21 @@ export function ChatSidebar() {
         </div>
       </ScrollArea>
 
-      {/* Footer */}
-      <div className="p-4 border-t border-[#2a2a2a]">
+      {/* User Info Footer */}
+      <div className="p-3 border-t border-[#333333]">
         <div className="flex items-center justify-between">
           <div className="flex items-center min-w-0 flex-1">
-            <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center mr-3 shrink-0">
-              <span className="text-white text-sm font-medium">
+            <div className="w-8 h-8 rounded-full glass border border-white/20 flex items-center justify-center mr-2 shrink-0">
+              <span className="text-white text-sm font-bold">
                 {user?.firstName?.charAt(0) || user?.emailAddresses[0]?.emailAddress.charAt(0).toUpperCase()}
               </span>
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-white text-sm truncate">
-                {user?.firstName || user?.emailAddresses[0]?.emailAddress}
+              <p className="text-white text-sm font-medium truncate">
+                {user?.firstName || 'User'}
+              </p>
+              <p className="text-[#cccccc] text-xs truncate">
+                {user?.emailAddresses[0]?.emailAddress}
               </p>
             </div>
           </div>
@@ -112,7 +118,7 @@ export function ChatSidebar() {
             variant="ghost"
             size="sm"
             onClick={() => signOut()}
-            className="p-1 h-6 w-6 text-[#a0a0a0] hover:text-white hover:bg-white/10"
+            className="p-1 h-6 w-6 text-[#cccccc] hover:text-white hover:bg-white/10"
           >
             <LogOut className="w-3 h-3" />
           </Button>

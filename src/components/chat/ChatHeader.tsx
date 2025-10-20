@@ -1,29 +1,26 @@
 'use client';
 
-import { useUser } from '@clerk/nextjs';
-import { UserButton } from '@clerk/nextjs';
+import { Button } from '@/components/ui/button';
+import { Menu } from 'lucide-react';
 
-export function ChatHeader() {
-  const { user } = useUser();
+interface ChatHeaderProps {
+  onMenuClick?: () => void;
+}
 
+export function ChatHeader({ onMenuClick }: ChatHeaderProps) {
   return (
-    <div className="p-4 border-b border-[#2a2a2a] glass">
-      <div className="max-w-4xl mx-auto flex items-center justify-between">
-        <div>
-          <h1 className="text-lg font-semibold text-white">Radon AGI</h1>
-          <p className="text-sm text-[#a0a0a0]">Advanced General Intelligence</p>
-        </div>
+    <div className="p-4 border-b border-[#333333] glass">
+      <div className="max-w-3xl mx-auto flex items-center justify-center">
         <div className="flex items-center gap-3">
-          <span className="text-sm text-[#a0a0a0]">
-            {user?.firstName || user?.emailAddresses[0]?.emailAddress}
-          </span>
-          <UserButton 
-            appearance={{
-              elements: {
-                avatarBox: "w-8 h-8",
-              }
-            }}
-          />
+          <Button
+            onClick={onMenuClick}
+            variant="ghost"
+            size="sm"
+            className="md:hidden p-2 text-[#cccccc] hover:text-white hover:bg-white/10"
+          >
+            <Menu className="w-5 h-5" />
+          </Button>
+          <h1 className="text-xl font-bold text-white text-center">Radon AGI</h1>
         </div>
       </div>
     </div>

@@ -8,20 +8,27 @@ const RADON_API_URL = process.env.RADON_API_URL;
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('Chat API called');
+    console.log('RADON_API_URL:', RADON_API_URL);
+    
     const { userId } = await auth();
     
     if (!userId) {
+      console.log('No userId found');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const body = await request.json();
     const { message, chatId, max_tokens = 512, temperature = 0.7, do_sample = true } = body;
 
+    console.log('Request body:', { message, chatId, max_tokens, temperature, do_sample });
+
     if (!message) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 });
     }
 
     if (!RADON_API_URL) {
+      console.log('RADON_API_URL not configured');
       return NextResponse.json({ error: 'RADON_API_URL not configured' }, { status: 500 });
     }
 
@@ -29,19 +36,9 @@ export async function POST(request: NextRequest) {
 
     // Create new chat if no chatId provided
     if (!currentChatId) {
-      const [newChat] = await db.insert(chats).values({
-        userId,
-        title: message.slice(0, 50) + (message.length > 50 ? '...' : ''),
-      }).returning();
-      currentChatId = newChat.id;
+      currentChatId = `temp-${Date.now()}`;
+      console.log('Created temp chat:', currentChatId);
     }
-
-    // Save user message
-    await db.insert(messages).values({
-      chatId: currentChatId,
-      role: 'user',
-      content: message,
-    });
 
     // System prompt for Radon AGI
     const systemPrompt = `Ты Radon AGI - Advanced General Intelligence, созданный MagistrTheOne в Краснодаре, 2025.
@@ -62,6 +59,7 @@ export async function POST(request: NextRequest) {
 Отвечай на русском языке, будь полезным и дружелюбным.`;
 
     // Call Radon API with system prompt
+    console.log('Calling Radon API...');
     const radonResponse = await fetch(`${RADON_API_URL}/chat`, {
       method: 'POST',
       headers: {
@@ -77,24 +75,15 @@ export async function POST(request: NextRequest) {
     });
 
     if (!radonResponse.ok) {
-      throw new Error('Failed to get response from Radon API');
+      console.error('Radon API error:', radonResponse.status, radonResponse.statusText);
+      throw new Error(`Radon API error: ${radonResponse.status} ${radonResponse.statusText}`);
     }
 
     const radonData = await radonResponse.json();
+    console.log('Radon API response received');
 
-    // Save assistant message
-    await db.insert(messages).values({
-      chatId: currentChatId,
-      role: 'assistant',
-      content: radonData.response,
-      tokens: radonData.tokens_generated,
-      generationTime: radonData.generation_time,
-    });
-
-    // Update chat timestamp
-    await db.update(chats)
-      .set({ updatedAt: new Date() })
-      .where(eq(chats.id, currentChatId));
+    // Skip database operations for now
+    console.log('Skipping database operations');
 
     return NextResponse.json({
       response: radonData.response,

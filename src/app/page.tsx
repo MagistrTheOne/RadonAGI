@@ -16,7 +16,7 @@ export default function Home() {
           </p>
  
           <div className="pt-8">
-            <Link href="/sign-in">
+            <Link href="/chat">
               <Button 
                 variant="outline" 
                 size="lg"

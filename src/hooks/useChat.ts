@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
-import { apiClient } from '@/lib/api-client';
 import { Message } from '@/lib/types';
+import { apiClient } from '@/lib/api-client';
 
 export function useChat(chatId?: string) {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -20,26 +20,39 @@ export function useChat(chatId?: string) {
     setError(null);
 
     try {
-      const response = await apiClient.post('/chat', {
-        message: content,
-        chatId,
-        max_tokens: 512,
-        temperature: 0.7,
-        do_sample: true,
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: content,
+          chatId,
+          max_tokens: 512,
+          temperature: 0.7,
+          do_sample: true,
+        }),
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: response.data.response,
+        content: data.response,
         timestamp: new Date(),
-        tokens: response.data.tokens_generated,
-        generationTime: response.data.generation_time,
+        tokens: data.tokens_generated,
+        generationTime: data.generation_time,
       };
 
       setMessages(prev => [...prev, assistantMessage]);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to send message');
+      console.error('Chat error:', err);
+      setError(err.message || 'Failed to send message');
     } finally {
       setIsLoading(false);
     }
@@ -47,10 +60,15 @@ export function useChat(chatId?: string) {
 
   const loadChat = useCallback(async (id: string) => {
     try {
-      const response = await apiClient.get(`/chats/${id}`);
-      setMessages(response.data.messages || []);
+      const response = await fetch(`/api/chats/${id}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setMessages(data || []);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to load chat');
+      console.error('Load chat error:', err);
+      setError(err.message || 'Failed to load chat');
     }
   }, []);
 
