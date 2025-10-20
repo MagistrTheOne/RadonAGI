@@ -4,7 +4,7 @@ import { db } from '@/db';
 import { chats, messages } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 
-const RADON_API_URL = process.env.RADON_API_URL || 'http://213.219.215.235';
+const RADON_API_URL = process.env.RADON_API_URL;
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,6 +19,10 @@ export async function POST(request: NextRequest) {
 
     if (!message) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 });
+    }
+
+    if (!RADON_API_URL) {
+      return NextResponse.json({ error: 'RADON_API_URL not configured' }, { status: 500 });
     }
 
     let currentChatId = chatId;
