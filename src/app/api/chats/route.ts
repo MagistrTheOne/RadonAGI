@@ -20,22 +20,10 @@ export async function GET() {
 
     console.log('Fetching chats for userId:', userId);
     
-    // Try direct query first
-    try {
-      const userChats = await db.select().from(chats).where(eq(chats.userId, userId));
-      console.log('Found chats (direct query):', userChats.length);
-      return NextResponse.json({ chats: userChats });
-    } catch (queryError) {
-      console.error('Direct query failed, trying relational query:', queryError);
-      
-      // Fallback to relational query
-      const userChats = await db.query.chats.findMany({
-        where: eq(chats.userId, userId),
-        orderBy: (chats, { desc }) => [desc(chats.updatedAt)],
-      });
-      console.log('Found chats (relational query):', userChats.length);
-      return NextResponse.json({ chats: userChats });
-    }
+    // Use direct select query (compatible with current Drizzle version)
+    const userChats = await db.select().from(chats).where(eq(chats.userId, userId));
+    console.log('Found chats:', userChats.length);
+    return NextResponse.json({ chats: userChats });
 
   } catch (error: any) {
     console.error('Get chats error:', error);

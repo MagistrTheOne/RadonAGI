@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
       // Get Bearer Token from environment or use default
       const bearerToken = process.env.RADON_BEARER_TOKEN || 'demo-token';
       
-      radonResponse = await fetch(`${RADON_API_URL}${API_CONFIG.RADON_API.CHAT}`, {
+      radonResponse = await fetch(`${RADON_API_URL}/api/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

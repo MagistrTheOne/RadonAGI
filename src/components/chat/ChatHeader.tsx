@@ -10,7 +10,7 @@ interface ChatHeaderProps {
 export function ChatHeader({ onMenuClick }: ChatHeaderProps) {
   return (
     <div className="p-4 border-b border-white/20 bg-black/10 backdrop-blur-sm">
-      <div className="max-w-3xl mx-auto flex items-center justify-center">
+      <div className="w-full flex items-center justify-center">
         <div className="flex items-center gap-3">
           <Button
             onClick={onMenuClick}

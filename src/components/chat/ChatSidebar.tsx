@@ -55,9 +55,25 @@ export function ChatSidebar({ isOpen = true, onClose }: ChatSidebarProps) {
   };
 
   return (
-    <div className="w-56 bg-black/10 backdrop-blur-sm border-r border-white/20 flex flex-col h-full">
+    <div className={cn(
+      "w-56 bg-black/10 backdrop-blur-sm border-r border-white/20 flex flex-col h-full transition-all duration-300",
+      !isOpen && "hidden md:flex"
+    )}>
       {/* Header */}
       <div className="p-3 border-b border-white/20">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-white font-semibold text-sm">Чаты</h2>
+          {onClose && (
+            <Button
+              onClick={onClose}
+              variant="ghost"
+              size="sm"
+              className="md:hidden p-1 h-6 w-6 text-white/80 hover:text-white hover:bg-white/10"
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          )}
+        </div>
         <Button
           onClick={handleNewChat}
           disabled={isCreating}
@@ -103,27 +119,29 @@ export function ChatSidebar({ isOpen = true, onClose }: ChatSidebarProps) {
 
       {/* User Info Footer */}
       <div className="p-3 border-t border-white/20">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center min-w-0 flex-1">
-            <div className="mr-2 shrink-0">
-              <UserButton 
-                appearance={{
-                  elements: {
-                    avatarBox: "w-8 h-8",
-                    userButtonPopoverCard: "bg-black/20 backdrop-blur-sm border-white/20",
-                    userButtonPopoverActionButton: "text-white hover:bg-white/10",
-                    userButtonPopoverFooter: "hidden"
-                  }
-                }}
-              />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-white text-sm font-medium truncate">
-                {user?.firstName || 'Пользователь'}
-              </p>
-              <p className="text-white/60 text-xs truncate">
-                {user?.emailAddresses[0]?.emailAddress}
-              </p>
+        <div className="bg-black/20 backdrop-blur-sm border border-white/20 rounded-lg p-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center min-w-0 flex-1">
+              <div className="mr-3 shrink-0">
+                <UserButton 
+                  appearance={{
+                    elements: {
+                      avatarBox: "w-10 h-10 rounded-lg border border-white/20",
+                      userButtonPopoverCard: "bg-black/20 backdrop-blur-sm border-white/20",
+                      userButtonPopoverActionButton: "text-white hover:bg-white/10",
+                      userButtonPopoverFooter: "hidden"
+                    }
+                  }}
+                />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-white text-sm font-medium truncate">
+                  {user?.firstName || 'Пользователь'}
+                </p>
+                <p className="text-white/60 text-xs truncate">
+                  {user?.emailAddresses[0]?.emailAddress}
+                </p>
+              </div>
             </div>
           </div>
         </div>

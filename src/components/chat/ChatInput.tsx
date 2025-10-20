@@ -43,7 +43,7 @@ export function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
 
   return (
     <div className="border-t border-white/20 bg-black/10 backdrop-blur-sm">
-      <div className="max-w-3xl mx-auto p-4">
+      <div className="w-full p-4">
         <form onSubmit={handleSubmit} className="flex gap-3">
           <div className="flex-1 relative">
             <textarea

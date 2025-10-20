@@ -2,11 +2,14 @@ import { z } from 'zod';
 
 // Chat API validation schemas
 export const ChatRequestSchema = z.object({
-  message: z.string().min(1, 'Message is required').max(4000, 'Message too long'),
+  message: z.string().min(1, 'Message is required').max(1000, 'Message too long (max 1000 tokens)'),
   chatId: z.string().uuid().optional(),
-  max_tokens: z.number().int().min(1).max(2048).optional(),
+  max_new_tokens: z.number().int().min(1).max(900).optional(),
   temperature: z.number().min(0).max(2).optional(),
   do_sample: z.boolean().optional(),
+  top_p: z.number().min(0).max(1).optional(),
+  top_k: z.number().int().min(0).optional(),
+  system_prompt: z.string().max(1000).optional(),
 });
 
 export const ChatResponseSchema = z.object({
@@ -17,8 +20,14 @@ export const ChatResponseSchema = z.object({
     model: z.string(),
     device: z.string(),
     dtype: z.string(),
+    chat_id: z.string().uuid().optional(),
   }),
-  chatId: z.string().uuid(),
+  token_usage: z.object({
+    input_tokens: z.number().int().positive(),
+    output_tokens: z.number().int().positive(),
+    total_tokens: z.number().int().positive(),
+    max_context: z.number().int().positive(),
+  }),
 });
 
 // Chats API validation schemas

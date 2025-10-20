@@ -38,6 +38,9 @@ export function DemoChat() {
     setIsLoading(true);
 
     try {
+      console.log('🚀 Sending demo chat request to:', '/api/demo-chat');
+      console.log('📝 Message:', input.trim());
+      
       // Отправляем запрос на демо API (без авторизации)
       const response = await fetch('/api/demo-chat', {
         method: 'POST',
@@ -46,11 +49,16 @@ export function DemoChat() {
         },
         body: JSON.stringify({
           message: input.trim(),
-          max_tokens: 512,
+          max_new_tokens: 500,
           temperature: 0.7,
           do_sample: true,
+          top_p: 0.9,
+          top_k: 50,
         }),
       });
+
+      console.log('📡 Response status:', response.status);
+      console.log('📡 Response ok:', response.ok);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

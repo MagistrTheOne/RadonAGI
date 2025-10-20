@@ -47,7 +47,7 @@ export default function ChatPage() {
           </Suspense>
           
           {/* Main Content */}
-          <main className="flex-1 flex flex-col">
+          <main className="flex-1 flex flex-col min-w-0">
             <Suspense fallback={<div className="p-4 border-b border-white/20 bg-black/10 backdrop-blur-sm animate-pulse" />}>
               <ChatHeader onMenuClick={() => setSidebarOpen(true)} />
             </Suspense>

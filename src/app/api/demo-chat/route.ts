@@ -3,19 +3,24 @@ import { z } from 'zod';
 import { API_CONFIG } from '@/config/api';
 
 const DemoChatSchema = z.object({
-  message: z.string().min(1, 'Message is required').max(4000, 'Message too long'),
-  max_tokens: z.number().int().min(1).max(2048).optional(),
+  message: z.string().min(1, 'Message is required').max(1000, 'Message too long (max 1000 tokens)'),
+  max_new_tokens: z.number().int().min(1).max(900).optional(),
   temperature: z.number().min(0).max(2).optional(),
   do_sample: z.boolean().optional(),
+  top_p: z.number().min(0).max(1).optional(),
+  top_k: z.number().int().min(0).optional(),
+  system_prompt: z.string().max(1000).optional(),
 });
 
 const RADON_API_URL = process.env.RADON_API_URL;
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('🚀 Demo Chat API called');
+    console.log('🚀 Demo Chat API called - ENDPOINT REACHED');
     console.log('🔗 RADON_API_URL:', RADON_API_URL);
     console.log('📅 Timestamp:', new Date().toISOString());
+    console.log('🌐 Request URL:', request.url);
+    console.log('📋 Request method:', request.method);
 
     let body;
     try {
@@ -35,16 +40,24 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
-    const { message, max_tokens = 512, temperature = 0.7, do_sample = true } = validationResult.data;
+    const { 
+      message, 
+      max_new_tokens = 500, 
+      temperature = 0.7, 
+      do_sample = true,
+      top_p = 0.9,
+      top_k = 50,
+      system_prompt
+    } = validationResult.data;
 
     if (!RADON_API_URL) {
       console.error('RADON_API_URL not configured');
       return NextResponse.json({ error: 'RADON_API_URL not configured' }, { status: 500 });
     }
 
-    const systemPrompt = `Ты Radon AGI - Advanced General Intelligence, созданный MagistrTheOne в Краснодаре, 2025.
+    const systemPrompt = system_prompt || `Ты — Radon Ultra, мощный AI-ассистент, созданный MagistrTheOne в Краснодаре, 2025.
 
-Ты - передовой искусственный интеллект с 31.72 миллиардами параметров, специально обученный для работы на русском языке. Твоя задача - помогать пользователям решать различные задачи, от простых вопросов до сложного анализа данных.
+Ты - передовой искусственный интеллект с 35 миллиардами параметров, специально обученный для работы на русском языке. Твоя задача - помогать пользователям решать различные задачи, от простых вопросов до сложного анализа данных.
 
 Особенности:
 - Отвечай на русском языке
@@ -57,18 +70,28 @@ export async function POST(request: NextRequest) {
 
     let radonResponse;
     try {
-      console.log('Calling Radon API:', `${RADON_API_URL}${API_CONFIG.RADON_API.DEMO_CHAT}`);
-      console.log('Radon API request body:', { message, system_prompt: systemPrompt, max_tokens, temperature, do_sample });
+      console.log('Calling Radon API:', `${RADON_API_URL}/api/demo-chat`);
+      console.log('Radon API request body:', { 
+        message, 
+        system_prompt: systemPrompt, 
+        max_new_tokens, 
+        temperature, 
+        do_sample,
+        top_p,
+        top_k
+      });
       
-      radonResponse = await fetch(`${RADON_API_URL}${API_CONFIG.RADON_API.DEMO_CHAT}`, {
+      radonResponse = await fetch(`${RADON_API_URL}/api/demo-chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           message, 
           system_prompt: systemPrompt, 
-          max_tokens, 
+          max_new_tokens, 
           temperature, 
-          do_sample 
+          do_sample,
+          top_p,
+          top_k
         }),
       });
       console.log('Radon API response status:', radonResponse.status);
