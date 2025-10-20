@@ -8,6 +8,10 @@ export const API_CONFIG = {
     CHAT: '/api/chat',
     DEMO_CHAT: '/api/demo-chat',
     WHITELIST: '/api/whitelist',
+    METRICS: '/metrics',
+    CACHE_STATS: '/cache/stats',
+    CACHE_CLEAR: '/cache/clear',
+    HEALTH: '/health',
   },
 } as const;
 

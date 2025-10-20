@@ -18,7 +18,9 @@ export const SYSTEM_PROMPTS = {
 } as const;
 
 export const DEFAULT_CHAT_CONFIG = {
-  max_tokens: 512,
+  max_new_tokens: 500,
   temperature: 0.7,
   do_sample: true,
+  top_p: 0.9,
+  top_k: 50,
 } as const;

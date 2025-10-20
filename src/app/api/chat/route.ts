@@ -51,11 +51,13 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
-    const { message, chatId, max_tokens, temperature, do_sample } = validationResult.data;
+    const { message, chatId, max_new_tokens, temperature, do_sample, top_p, top_k, system_prompt } = validationResult.data;
     const finalConfig = {
-      max_tokens: max_tokens ?? DEFAULT_CHAT_CONFIG.max_tokens,
+      max_new_tokens: max_new_tokens ?? DEFAULT_CHAT_CONFIG.max_new_tokens,
       temperature: temperature ?? DEFAULT_CHAT_CONFIG.temperature,
       do_sample: do_sample ?? DEFAULT_CHAT_CONFIG.do_sample,
+      top_p: top_p ?? DEFAULT_CHAT_CONFIG.top_p,
+      top_k: top_k ?? DEFAULT_CHAT_CONFIG.top_k,
     };
 
     console.log('Request body:', { message, chatId, ...finalConfig });
@@ -94,8 +96,8 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Use system prompt from config
-    const systemPrompt = SYSTEM_PROMPTS.RADON_AGI;
+    // Use system prompt from request or default
+    const systemPrompt = system_prompt || SYSTEM_PROMPTS.RADON_AGI;
 
     // Call Radon API with system prompt and Bearer Token
     console.log('Calling Radon API...');
@@ -113,7 +115,11 @@ export async function POST(request: NextRequest) {
         body: JSON.stringify({
           message,
           system_prompt: systemPrompt,
-          ...finalConfig,
+          max_new_tokens: finalConfig.max_new_tokens,
+          temperature: finalConfig.temperature,
+          do_sample: finalConfig.do_sample,
+          top_p: finalConfig.top_p,
+          top_k: finalConfig.top_k,
         }),
       });
     } catch (fetchError) {

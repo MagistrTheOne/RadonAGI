@@ -54,6 +54,7 @@ export function DemoChat() {
           do_sample: true,
           top_p: 0.9,
           top_k: 50,
+          system_prompt: 'Ты — Radon Ultra, мощный AI-ассистент.',
         }),
       });
 

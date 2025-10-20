@@ -1,6 +1,6 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
-const isProtectedRoute = createRouteMatcher(['/chat(.*)', '/api/chat(.*)', '/api/chats(.*)']);
+const isProtectedRoute = createRouteMatcher(['/chat(.*)', '/api/chat(.*)', '/api/chats(.*)', '/admin(.*)']);
 
 const isPublicRoute = createRouteMatcher(['/api/demo-chat(.*)', '/api/whitelist(.*)']);
 
