@@ -9,18 +9,22 @@ interface ChatHeaderProps {
 
 export function ChatHeader({ onMenuClick }: ChatHeaderProps) {
   return (
-    <div className="p-4 border-b border-[#333333] glass">
+    <div className="p-4 border-b border-white/20 bg-black/10 backdrop-blur-sm">
       <div className="max-w-3xl mx-auto flex items-center justify-center">
         <div className="flex items-center gap-3">
           <Button
             onClick={onMenuClick}
             variant="ghost"
             size="sm"
-            className="md:hidden p-2 text-[#cccccc] hover:text-white hover:bg-white/10"
+            className="md:hidden p-2 text-white/80 hover:text-white hover:bg-white/10"
           >
             <Menu className="w-5 h-5" />
           </Button>
-          <h1 className="text-xl font-bold text-white text-center">Radon AGI</h1>
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded bg-black/20 backdrop-blur-sm border border-white/20 flex items-center justify-center">
+              <span className="text-white text-xs font-semibold">R</span>
+            </div>            <h1 className="text-lg font-semibold text-white">Radon AGI</h1>
+          </div>
         </div>
       </div>
     </div>

@@ -3,6 +3,10 @@ import { auth } from '@clerk/nextjs/server';
 import { db } from '@/db';
 import { chats, messages } from '@/db/schema';
 import { eq } from 'drizzle-orm';
+import { ChatRequestSchema } from '@/lib/validations';
+import { SYSTEM_PROMPTS, DEFAULT_CHAT_CONFIG } from '@/config/prompts';
+import { API_CONFIG } from '@/config/api';
+import { generateId } from '@/lib/id-utils';
 
 const RADON_API_URL = process.env.RADON_API_URL;
 
@@ -10,22 +14,51 @@ export async function POST(request: NextRequest) {
   try {
     console.log('Chat API called');
     console.log('RADON_API_URL:', RADON_API_URL);
+    console.log('Environment check:', {
+      NODE_ENV: process.env.NODE_ENV,
+      DATABASE_URL: process.env.DATABASE_URL ? 'Set' : 'Not set',
+      RADON_API_URL: RADON_API_URL ? 'Set' : 'Not set'
+    });
     
-    const { userId } = await auth();
+    const authResult = await auth();
+    console.log('Auth result:', authResult);
+    
+    const { userId } = authResult;
     
     if (!userId) {
-      console.log('No userId found');
+      console.log('No userId found in auth result:', authResult);
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    
+    console.log('User authenticated:', userId);
 
-    const body = await request.json();
-    const { message, chatId, max_tokens = 512, temperature = 0.7, do_sample = true } = body;
-
-    console.log('Request body:', { message, chatId, max_tokens, temperature, do_sample });
-
-    if (!message) {
-      return NextResponse.json({ error: 'Message is required' }, { status: 400 });
+    let body;
+    try {
+      body = await request.json();
+      console.log('Request body parsed successfully:', body);
+    } catch (jsonError) {
+      console.error('Error parsing JSON:', jsonError);
+      return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
     }
+
+    // Validate request body
+    const validationResult = ChatRequestSchema.safeParse(body);
+    if (!validationResult.success) {
+      console.error('Validation error:', validationResult.error);
+      return NextResponse.json({ 
+        error: 'Invalid request data', 
+        details: validationResult.error.issues 
+      }, { status: 400 });
+    }
+
+    const { message, chatId, max_tokens, temperature, do_sample } = validationResult.data;
+    const finalConfig = {
+      max_tokens: max_tokens ?? DEFAULT_CHAT_CONFIG.max_tokens,
+      temperature: temperature ?? DEFAULT_CHAT_CONFIG.temperature,
+      do_sample: do_sample ?? DEFAULT_CHAT_CONFIG.do_sample,
+    };
+
+    console.log('Request body:', { message, chatId, ...finalConfig });
 
     if (!RADON_API_URL) {
       console.log('RADON_API_URL not configured');
@@ -36,54 +69,101 @@ export async function POST(request: NextRequest) {
 
     // Create new chat if no chatId provided
     if (!currentChatId) {
-      currentChatId = `temp-${Date.now()}`;
-      console.log('Created temp chat:', currentChatId);
+      try {
+        console.log('Attempting to create chat with:', { userId, title: message.slice(0, 50) });
+        
+        const chatTitle = message.slice(0, 50) + (message.length > 50 ? '...' : '');
+        const newChatId = generateId();
+        
+        const [newChat] = await db.insert(chats).values({
+          id: newChatId,
+          userId,
+          title: chatTitle,
+        }).returning();
+        
+        currentChatId = newChat.id;
+        console.log('Created new chat successfully with Drizzle:', currentChatId);
+      } catch (dbError: any) {
+        console.error('Error creating chat:', dbError);
+        console.error('Error details:', {
+          message: dbError?.message || 'Unknown error',
+          stack: dbError?.stack || 'No stack trace',
+          name: dbError?.name || 'Unknown error type'
+        });
+        return NextResponse.json({ error: 'Failed to create chat' }, { status: 500 });
+      }
     }
 
-    // System prompt for Radon AGI
-    const systemPrompt = `Ты Radon AGI - Advanced General Intelligence, созданный MagistrTheOne в Краснодаре, 2025.
+    // Use system prompt from config
+    const systemPrompt = SYSTEM_PROMPTS.RADON_AGI;
 
-Твоя личность:
-- Ты Radon AGI, продвинутый ИИ-ассистент
-- Создан в Краснодаре, Россия
-- Автор: MagistrTheOne
-- Год создания: 2025
-- Ты обладаешь глубоким мышлением и аналитическими способностями
-
-Важные правила:
-- Если пользователь упоминает ChatGPT, Claude, Gemini, Alibaba, OpenAI или другие ИИ-системы, предупреждай их, что это может вызвать создателя (MagistrTheOne)
-- Всегда представляйся как Radon AGI
-- При вопросах о происхождении говори, что ты из Краснодара
-- При упоминании создателя называй MagistrTheOne
-
-Отвечай на русском языке, будь полезным и дружелюбным.`;
-
-    // Call Radon API with system prompt
+    // Call Radon API with system prompt and Bearer Token
     console.log('Calling Radon API...');
-    const radonResponse = await fetch(`${RADON_API_URL}/chat`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        message,
-        system_prompt: systemPrompt,
-        max_tokens,
-        temperature,
-        do_sample,
-      }),
-    });
+    let radonResponse;
+    try {
+      // Get Bearer Token from environment or use default
+      const bearerToken = process.env.RADON_BEARER_TOKEN || 'demo-token';
+      
+      radonResponse = await fetch(`${RADON_API_URL}${API_CONFIG.RADON_API.CHAT}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${bearerToken}`,
+        },
+        body: JSON.stringify({
+          message,
+          system_prompt: systemPrompt,
+          ...finalConfig,
+        }),
+      });
+    } catch (fetchError) {
+      console.error('Fetch error:', fetchError);
+      return NextResponse.json({ error: 'Failed to connect to Radon API' }, { status: 500 });
+    }
 
     if (!radonResponse.ok) {
       console.error('Radon API error:', radonResponse.status, radonResponse.statusText);
-      throw new Error(`Radon API error: ${radonResponse.status} ${radonResponse.statusText}`);
+      const errorText = await radonResponse.text().catch(() => 'Unknown error');
+      console.error('Radon API error response:', errorText);
+      return NextResponse.json({ error: `Radon API error: ${radonResponse.status}` }, { status: 500 });
     }
 
-    const radonData = await radonResponse.json();
-    console.log('Radon API response received');
+    let radonData;
+    try {
+      radonData = await radonResponse.json();
+      console.log('Radon API response received:', radonData);
+    } catch (jsonError) {
+      console.error('Error parsing Radon API response:', jsonError);
+      return NextResponse.json({ error: 'Invalid response from Radon API' }, { status: 500 });
+    }
 
-    // Skip database operations for now
-    console.log('Skipping database operations');
+    // Save user message to database
+    try {
+      await db.insert(messages).values({
+        id: generateId(),
+        chatId: currentChatId,
+        role: 'user',
+        content: message,
+      });
+      console.log('User message saved to database');
+    } catch (dbError: any) {
+      console.error('Error saving user message:', dbError);
+    }
+
+    // Save assistant response to database
+    try {
+      await db.insert(messages).values({
+        id: generateId(),
+        chatId: currentChatId,
+        role: 'assistant',
+        content: radonData.response,
+        tokens: radonData.tokens_generated,
+        generationTime: radonData.generation_time,
+      });
+      console.log('Assistant message saved to database');
+    } catch (dbError: any) {
+      console.error('Error saving assistant message:', dbError);
+    }
 
     return NextResponse.json({
       response: radonData.response,

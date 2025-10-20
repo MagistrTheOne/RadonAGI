@@ -1,47 +1,109 @@
-import { useState, useEffect, useCallback } from 'react';
-import { apiClient } from '@/lib/api-client';
-import { Chat } from '@/lib/types';
+import { useEffect, useCallback } from 'react';
+import { API_CONFIG } from '@/config/api';
+import { useChatsStore } from '@/store/chatsStore';
 
 export function useChats() {
-  const [chats, setChats] = useState<Chat[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { 
+    chats, 
+    currentChatId, 
+    isLoading, 
+    error,
+    setChats,
+    addChat,
+    updateChat,
+    removeChat,
+    setCurrentChatId,
+    setIsLoading,
+    setError,
+    clearError
+  } = useChatsStore();
 
   const fetchChats = useCallback(async () => {
     try {
       setIsLoading(true);
-      const response = await apiClient.get('/chats');
-      setChats(response.data.chats || []);
-      setError(null);
+      console.log('Fetching chats from:', API_CONFIG.ENDPOINTS.CHATS);
+      
+      const response = await fetch(API_CONFIG.ENDPOINTS.CHATS);
+      console.log('Fetch chats response status:', response.status);
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Fetch chats API Error:', response.status, errorData);
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('Fetch chats data:', data);
+      setChats(data.chats || []);
+      clearError();
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to fetch chats');
+      console.error('Fetch chats error:', err);
+      setError(err.message || 'Failed to fetch chats');
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [setIsLoading, setChats, setError, clearError]);
 
   const createChat = useCallback(async (title?: string) => {
     try {
-      const response = await apiClient.post('/chats', {
-        title: title || 'New Chat',
+      const requestBody = { title: title || 'New Chat' };
+      console.log('Creating chat with:', requestBody);
+      
+      const response = await fetch(API_CONFIG.ENDPOINTS.CHATS, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
       });
-      const newChat = response.data.chat;
-      setChats(prev => [newChat, ...prev]);
+      
+      console.log('Create chat response status:', response.status);
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Create chat API Error:', response.status, errorData);
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('Create chat data:', data);
+      const newChat = data.chat;
+      addChat(newChat);
       return newChat;
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to create chat');
+      console.error('Create chat error:', err);
+      setError(err.message || 'Failed to create chat');
       throw err;
     }
-  }, []);
+  }, [addChat, setError]);
 
   const deleteChat = useCallback(async (id: string) => {
     try {
-      await apiClient.delete('/chats', { data: { chatId: id } });
-      setChats(prev => prev.filter(chat => chat.id !== id));
+      const requestBody = { chatId: id };
+      console.log('Deleting chat:', requestBody);
+      
+      const response = await fetch(API_CONFIG.ENDPOINTS.CHATS, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      });
+      
+      console.log('Delete chat response status:', response.status);
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Delete chat API Error:', response.status, errorData);
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+      
+      removeChat(id);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to delete chat');
+      console.error('Delete chat error:', err);
+      setError(err.message || 'Failed to delete chat');
     }
-  }, []);
+  }, [removeChat, setError]);
 
   useEffect(() => {
     fetchChats();
@@ -49,10 +111,13 @@ export function useChats() {
 
   return { 
     chats, 
+    currentChatId,
     isLoading, 
     error, 
     createChat, 
     deleteChat, 
-    refreshChats: fetchChats 
+    refreshChats: fetchChats,
+    setCurrentChatId,
+    clearError
   };
 }

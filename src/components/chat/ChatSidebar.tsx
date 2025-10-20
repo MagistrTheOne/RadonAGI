@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useUser, useClerk } from '@clerk/nextjs';
+import { useUser, useClerk, UserButton } from '@clerk/nextjs';
 import { useChats } from '@/hooks/useChats';
 import { useChatStore } from '@/store/chatStore';
 import { Button } from '@/components/ui/button';
@@ -17,8 +17,13 @@ interface ChatSidebarProps {
 export function ChatSidebar({ isOpen = true, onClose }: ChatSidebarProps) {
   const { user } = useUser();
   const { signOut } = useClerk();
-  const { chats, createChat, deleteChat } = useChats();
-  const { currentChatId, setCurrentChatId } = useChatStore();
+  const { 
+    chats, 
+    currentChatId, 
+    createChat, 
+    deleteChat, 
+    setCurrentChatId 
+  } = useChats();
   const [isCreating, setIsCreating] = useState(false);
 
   const handleNewChat = async () => {
@@ -50,16 +55,16 @@ export function ChatSidebar({ isOpen = true, onClose }: ChatSidebarProps) {
   };
 
   return (
-    <div className="w-56 glass border-r border-[#333333] flex flex-col h-full">
+    <div className="w-56 bg-black/10 backdrop-blur-sm border-r border-white/20 flex flex-col h-full">
       {/* Header */}
-      <div className="p-3 border-b border-[#333333]">
+      <div className="p-3 border-b border-white/20">
         <Button
           onClick={handleNewChat}
           disabled={isCreating}
-          className="w-full glass border-white/20 text-white hover:bg-white/10 hover:border-white/30 text-sm"
+          className="w-full bg-black/30 hover:bg-black/40 backdrop-blur-sm border border-white/20 text-white text-sm"
         >
           <Plus className="w-4 h-4 mr-2" />
-          {isCreating ? 'Creating...' : 'New Chat'}
+          {isCreating ? 'Создание...' : 'Новый чат'}
         </Button>
       </div>
 
@@ -71,14 +76,14 @@ export function ChatSidebar({ isOpen = true, onClose }: ChatSidebarProps) {
               key={chat.id}
               onClick={() => handleSelectChat(chat.id)}
               className={cn(
-                "group flex items-center justify-between p-2 rounded-md cursor-pointer transition-all",
+                "group flex items-center justify-between p-2 rounded-md cursor-pointer transition-all border",
                 currentChatId === chat.id
-                  ? "bg-white/10"
-                  : "hover:bg-white/5"
+                  ? "bg-black/30 border-white/20"
+                  : "hover:bg-black/20 border-transparent"
               )}
             >
               <div className="flex items-center min-w-0 flex-1">
-                <MessageSquare className="w-4 h-4 mr-2 text-[#a0a0a0] shrink-0" />
+                <MessageSquare className="w-4 h-4 mr-2 text-white/80 shrink-0" />
                 <span className="text-white text-sm truncate">
                   {chat.title}
                 </span>
@@ -87,7 +92,7 @@ export function ChatSidebar({ isOpen = true, onClose }: ChatSidebarProps) {
                 variant="ghost"
                 size="sm"
                 onClick={(e) => handleDeleteChat(chat.id, e)}
-                className="opacity-0 group-hover:opacity-100 transition-opacity p-1 h-6 w-6 text-[#a0a0a0] hover:text-white hover:bg-white/10"
+                className="opacity-0 group-hover:opacity-100 transition-opacity p-1 h-6 w-6 text-white/80 hover:text-white hover:bg-white/10"
               >
                 <Trash2 className="w-3 h-3" />
               </Button>
@@ -97,31 +102,30 @@ export function ChatSidebar({ isOpen = true, onClose }: ChatSidebarProps) {
       </ScrollArea>
 
       {/* User Info Footer */}
-      <div className="p-3 border-t border-[#333333]">
+      <div className="p-3 border-t border-white/20">
         <div className="flex items-center justify-between">
           <div className="flex items-center min-w-0 flex-1">
-            <div className="w-8 h-8 rounded-full glass border border-white/20 flex items-center justify-center mr-2 shrink-0">
-              <span className="text-white text-sm font-bold">
-                {user?.firstName?.charAt(0) || user?.emailAddresses[0]?.emailAddress.charAt(0).toUpperCase()}
-              </span>
+            <div className="mr-2 shrink-0">
+              <UserButton 
+                appearance={{
+                  elements: {
+                    avatarBox: "w-8 h-8",
+                    userButtonPopoverCard: "bg-black/20 backdrop-blur-sm border-white/20",
+                    userButtonPopoverActionButton: "text-white hover:bg-white/10",
+                    userButtonPopoverFooter: "hidden"
+                  }
+                }}
+              />
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-white text-sm font-medium truncate">
-                {user?.firstName || 'User'}
+                {user?.firstName || 'Пользователь'}
               </p>
-              <p className="text-[#cccccc] text-xs truncate">
+              <p className="text-white/60 text-xs truncate">
                 {user?.emailAddresses[0]?.emailAddress}
               </p>
             </div>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => signOut()}
-            className="p-1 h-6 w-6 text-[#cccccc] hover:text-white hover:bg-white/10"
-          >
-            <LogOut className="w-3 h-3" />
-          </Button>
         </div>
       </div>
     </div>

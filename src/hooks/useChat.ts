@@ -1,26 +1,36 @@
-import { useState, useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Message } from '@/lib/types';
-import { apiClient } from '@/lib/api-client';
+import { useChatStore } from '@/store/chatStore';
+import { generateMessageId } from '@/lib/id-utils';
+import { API_CONFIG, DEFAULT_CHAT_PARAMS } from '@/config/api';
 
 export function useChat(chatId?: string) {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { 
+    messages, 
+    isLoading, 
+    error, 
+    addMessage, 
+    setMessages, 
+    setIsLoading, 
+    setError 
+  } = useChatStore();
 
   const sendMessage = useCallback(async (content: string) => {
     const userMessage: Message = {
-      id: Date.now().toString(),
+      id: generateMessageId(),
       role: 'user',
       content,
       timestamp: new Date(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    addMessage(userMessage);
     setIsLoading(true);
     setError(null);
 
     try {
-      const response = await fetch('/api/chat', {
+      console.log('Sending message:', { content, chatId, ...DEFAULT_CHAT_PARAMS });
+      
+      const response = await fetch(API_CONFIG.ENDPOINTS.CHAT, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -28,20 +38,23 @@ export function useChat(chatId?: string) {
         body: JSON.stringify({
           message: content,
           chatId,
-          max_tokens: 512,
-          temperature: 0.7,
-          do_sample: true,
+          ...DEFAULT_CHAT_PARAMS,
         }),
       });
 
+      console.log('Response status:', response.status);
+
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json().catch(() => ({}));
+        console.error('API Error:', response.status, errorData);
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
+      console.log('Response data:', data);
 
       const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
+        id: generateMessageId(),
         role: 'assistant',
         content: data.response,
         timestamp: new Date(),
@@ -49,39 +62,46 @@ export function useChat(chatId?: string) {
         generationTime: data.generation_time,
       };
 
-      setMessages(prev => [...prev, assistantMessage]);
+      addMessage(assistantMessage);
     } catch (err: any) {
       console.error('Chat error:', err);
       setError(err.message || 'Failed to send message');
     } finally {
       setIsLoading(false);
     }
-  }, [chatId]);
+  }, [chatId, addMessage, setIsLoading, setError]);
 
   const loadChat = useCallback(async (id: string) => {
     try {
-      const response = await fetch(`/api/chats/${id}`);
+      console.log('Loading chat:', id);
+      const response = await fetch(API_CONFIG.ENDPOINTS.CHAT_BY_ID(id));
+      console.log('Load chat response status:', response.status);
+      
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Load chat API Error:', response.status, errorData);
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
       }
+      
       const data = await response.json();
-      setMessages(data || []);
+      console.log('Load chat data:', data);
+      setMessages(data.messages || []);
     } catch (err: any) {
       console.error('Load chat error:', err);
       setError(err.message || 'Failed to load chat');
     }
-  }, []);
+  }, [setMessages, setError]);
 
   const clearError = useCallback(() => {
     setError(null);
-  }, []);
+  }, [setError]);
 
-  return { 
-    messages, 
-    isLoading, 
-    error, 
-    sendMessage, 
-    loadChat, 
-    clearError 
-  };
+      return useMemo(() => ({ 
+        messages, 
+        isLoading, 
+        error, 
+        sendMessage, 
+        loadChat, 
+        clearError 
+      }), [messages, isLoading, error, sendMessage, loadChat, clearError]);
 }
