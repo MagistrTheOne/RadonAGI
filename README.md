@@ -20,6 +20,5 @@ Advanced General Intelligence Chat Interface by MagistrTheOne
 - **State Management**: Zustand
 - **API**: Axios with Next.js API routes
 
- 
 
 © 2025 MagistrTheOne. Radon AGI Project
