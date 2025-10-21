@@ -10,9 +10,9 @@ export const TypingIndicator = memo(function TypingIndicator() {
       </div>
       <div className="flex items-center space-x-3">
         <div className="flex space-x-1">
-          <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce"></div>
-          <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-          <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+          <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce [animation-duration:1.4s]"></div>
+          <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce [animation-duration:1.4s] [animation-delay:0.2s]"></div>
+          <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce [animation-duration:1.4s] [animation-delay:0.4s]"></div>
         </div>
         <span className="text-white/80 text-sm font-medium animate-pulse">Radon печатает...</span>
       </div>

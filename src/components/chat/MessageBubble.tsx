@@ -15,13 +15,13 @@ export const MessageBubble = memo(function MessageBubble({ message }: MessageBub
   const cleanContent = message.content.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
 
   return (
-    <div className="w-full px-2 md:px-4 py-2 md:py-3 animate-in fade-in slide-in-from-bottom-2 duration-500">
+    <div className="w-full px-2 md:px-4 py-2 md:py-3 animate-in fade-in slide-in-from-bottom-2 duration-500 group">
       <div className={cn(
         "flex gap-3 items-start",
         isUser ? "justify-end" : "justify-start"
       )}>
         {!isUser && (
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-black/20 backdrop-blur-sm border border-white/20">
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-black/20 backdrop-blur-sm border border-white/20 transition-all duration-200 group-hover:scale-105">
             <span className="text-white text-sm font-semibold">R</span>
           </div>
         )}
@@ -31,10 +31,10 @@ export const MessageBubble = memo(function MessageBubble({ message }: MessageBub
           isUser && "order-first"
         )}>
           <div className={cn(
-            "whitespace-pre-wrap px-4 py-3 rounded-lg border transition-all duration-200 backdrop-blur-sm w-full",
+            "whitespace-pre-wrap px-4 py-3 rounded-lg border transition-all duration-200 backdrop-blur-sm w-full group-hover:shadow-lg",
             isUser
-              ? "bg-black/20 border-white/20 text-white hover:bg-black/30"
-              : "bg-black/10 border-white/10 text-white hover:bg-black/20"
+              ? "bg-black/20 border-white/20 text-white hover:bg-black/30 hover:border-white/30"
+              : "bg-black/10 border-white/10 text-white hover:bg-black/20 hover:border-white/20"
           )}>
             {cleanContent}
           </div>
@@ -44,7 +44,7 @@ export const MessageBubble = memo(function MessageBubble({ message }: MessageBub
         </div>
         
         {isUser && (
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-black/30 backdrop-blur-sm border border-white/20">
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-black/30 backdrop-blur-sm border border-white/20 transition-all duration-200 group-hover:scale-105">
             <span className="text-white text-sm font-semibold">U</span>
           </div>
         )}

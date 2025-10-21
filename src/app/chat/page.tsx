@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
 import { useChatStore } from '@/store/chatStore';
 import { cn } from '@/lib/utils';
+import { ToastContainer } from '@/components/ui/toast';
+import { useToast } from '@/hooks/useToast';
 
 // Lazy load components
 const ChatSidebar = lazy(() => import('@/components/chat/ChatSidebar').then(m => ({ default: m.ChatSidebar })));
@@ -24,6 +26,7 @@ export default function ChatPage() {
     }
     return false;
   });
+  const { toasts, removeToast } = useToast();
 
   // Load chat messages when currentChatId changes
   useEffect(() => {
@@ -124,6 +127,9 @@ export default function ChatPage() {
           <ChatInput onSendMessage={sendMessage} isLoading={isLoading} />
         </Suspense>
       </main>
+      
+      {/* Toast Container */}
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
     </div>
   );
 }
