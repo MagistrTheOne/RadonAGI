@@ -1,19 +1,16 @@
 /* Mobile-First Responsive Design */
 
-/* Touch-friendly sizes */
+/* Touch-friendly sizes - using Tailwind classes */
 .touch-target {
-  min-height: 44px;
-  min-width: 44px;
+  @apply min-h-[44px] min-w-[44px];
 }
 
 .touch-target-sm {
-  min-height: 36px;
-  min-width: 36px;
+  @apply min-h-[36px] min-w-[36px];
 }
 
 .touch-target-lg {
-  min-height: 56px;
-  min-width: 56px;
+  @apply min-h-[56px] min-w-[56px];
 }
 
 /* Mobile spacing */
@@ -70,24 +67,24 @@
 
 /* Mobile buttons */
 .mobile-button {
-  @apply w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 touch-target;
+  @apply w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 min-h-[44px] min-w-[44px];
 }
 
 .mobile-button-primary {
-  @apply mobile-button bg-black/30 hover:bg-black/40 border border-white/20 text-white;
+  @apply w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 min-h-[44px] min-w-[44px] bg-black/30 hover:bg-black/40 border border-white/20 text-white;
 }
 
 .mobile-button-secondary {
-  @apply mobile-button bg-transparent hover:bg-white/10 border border-white/20 text-white;
+  @apply w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 min-h-[44px] min-w-[44px] bg-transparent hover:bg-white/10 border border-white/20 text-white;
 }
 
 /* Mobile forms */
 .mobile-input {
-  @apply w-full py-3 px-4 rounded-lg bg-black/20 border border-white/20 text-white placeholder:text-white/60 focus:border-white/40 focus:ring-1 focus:ring-white/20 focus:outline-none transition-all duration-200 touch-target;
+  @apply w-full py-3 px-4 rounded-lg bg-black/20 border border-white/20 text-white placeholder:text-white/60 focus:border-white/40 focus:ring-1 focus:ring-white/20 focus:outline-none transition-all duration-200 min-h-[44px] min-w-[44px];
 }
 
 .mobile-textarea {
-  @apply mobile-input resize-none min-h-[120px];
+  @apply w-full py-3 px-4 rounded-lg bg-black/20 border border-white/20 text-white placeholder:text-white/60 focus:border-white/40 focus:ring-1 focus:ring-white/20 focus:outline-none transition-all duration-200 min-h-[120px] resize-none;
 }
 
 /* Mobile modals */

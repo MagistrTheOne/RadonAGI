@@ -2,11 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 const WhitelistSchema = z.object({
-  companyName: z.string().min(1, 'Название компании обязательно'),
-  contactName: z.string().min(1, 'Контактное лицо обязательно'),
+  name: z.string().min(1, 'Имя обязательно'),
   email: z.string().email('Некорректный email'),
-  phone: z.string().optional(),
-  message: z.string().optional(),
+  company: z.string().optional(),
 });
 
 export async function POST(request: NextRequest) {
@@ -22,12 +20,12 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
-    const { companyName, contactName, email, phone, message } = validationResult.data;
+    const { name, email, company } = validationResult.data;
 
     // Отправляем email на maxonyushko71@gmail.com
     const emailData = {
       to: 'maxonyushko71@gmail.com',
-      subject: `Новая заявка в White List - ${companyName}`,
+      subject: `Новая заявка в White List - ${name}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px;">
@@ -35,19 +33,11 @@ export async function POST(request: NextRequest) {
           </h2>
           
           <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #007bff; margin-top: 0;">Информация о компании:</h3>
-            <p><strong>Название компании:</strong> ${companyName}</p>
-            <p><strong>Контактное лицо:</strong> ${contactName}</p>
+            <h3 style="color: #007bff; margin-top: 0;">Информация о заявителе:</h3>
+            <p><strong>Имя:</strong> ${name}</p>
             <p><strong>Email:</strong> ${email}</p>
-            ${phone ? `<p><strong>Телефон:</strong> ${phone}</p>` : ''}
+            ${company ? `<p><strong>Компания:</strong> ${company}</p>` : ''}
           </div>
-
-          ${message ? `
-            <div style="background: #e9ecef; padding: 20px; border-radius: 8px; margin: 20px 0;">
-              <h3 style="color: #007bff; margin-top: 0;">Сообщение:</h3>
-              <p style="white-space: pre-wrap;">${message}</p>
-            </div>
-          ` : ''}
 
           <div style="background: #d4edda; padding: 15px; border-radius: 8px; margin: 20px 0;">
             <p style="margin: 0; color: #155724;">
@@ -66,30 +56,25 @@ export async function POST(request: NextRequest) {
       text: `
 Новая заявка в White List Radon AGI
 
-Информация о компании:
-- Название компании: ${companyName}
-- Контактное лицо: ${contactName}
+Информация о заявителе:
+- Имя: ${name}
 - Email: ${email}
-${phone ? `- Телефон: ${phone}` : ''}
-
-${message ? `Сообщение:\n${message}\n` : ''}
+${company ? `- Компания: ${company}` : ''}
 
 Дата подачи заявки: ${new Date().toLocaleString('ru-RU')}
 
 ---
 Это автоматическое уведомление с сайта Radon AGI.
-Свяжитесь с компанией в течение 24 часов для обсуждения возможностей сотрудничества.
+Свяжитесь с заявителем в течение 24 часов для обсуждения возможностей сотрудничества.
       `
     };
 
     // Здесь можно добавить реальную отправку email через сервис типа SendGrid, Nodemailer и т.д.
     // Пока что просто логируем в консоль
     console.log('=== WHITE LIST APPLICATION ===');
-    console.log('Company:', companyName);
-    console.log('Contact:', contactName);
+    console.log('Name:', name);
     console.log('Email:', email);
-    console.log('Phone:', phone || 'Not provided');
-    console.log('Message:', message || 'No message');
+    console.log('Company:', company || 'Not provided');
     console.log('Date:', new Date().toISOString());
     console.log('==============================');
 

@@ -61,7 +61,7 @@ export function ThemeToggle() {
       className="w-9 h-9 p-0 bg-black/20 hover:bg-black/30 border border-white/20 transition-all duration-200 hover:scale-105"
       title={`Текущая тема: ${currentTheme?.label}. Нажмите для переключения на ${nextTheme.label}`}
     >
-      <currentTheme?.icon className="w-4 h-4 text-white" />
+      {currentTheme && <currentTheme.icon className="w-4 h-4 text-white" />}
     </Button>
   );
 }
