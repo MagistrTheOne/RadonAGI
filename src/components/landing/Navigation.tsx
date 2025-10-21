@@ -40,9 +40,11 @@ export function Navigation() {
               <Link href="/whitelist" className="text-white/80 hover:text-white transition-colors">
                 White List
               </Link>
-              <Link href="/admin" className="text-white/80 hover:text-white transition-colors">
-                Админ панель
-              </Link>
+              {user && (
+                <Link href="/admin" className="text-white/80 hover:text-white transition-colors">
+                  Админ панель
+                </Link>
+              )}
             </div>
           </div>
 
@@ -126,13 +128,15 @@ export function Navigation() {
                 >
                   White List
                 </Link>
-                <Link 
-                  href="/admin" 
-                  className="block px-3 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-md"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Админ панель
-                </Link>
+                {user && (
+                  <Link 
+                    href="/admin" 
+                    className="block px-3 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-md"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Админ панель
+                  </Link>
+                )}
               {user ? (
                 <div className="px-3 py-2">
                   <Link href="/chat" onClick={() => setIsMenuOpen(false)}>
