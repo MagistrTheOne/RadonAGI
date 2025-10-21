@@ -1,12 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { useUser, useClerk, UserButton } from '@clerk/nextjs';
 import { useChats } from '@/hooks/useChats';
 import { useChatStore } from '@/store/chatStore';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Plus, MessageSquare, Trash2, LogOut, X, Menu } from 'lucide-react';
+import { Plus, MessageSquare, Trash2, X, Menu, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ChatSidebarProps {
@@ -17,8 +16,6 @@ interface ChatSidebarProps {
 }
 
 export function ChatSidebar({ isOpen = true, onClose, onToggle, collapsed = false }: ChatSidebarProps) {
-  const { user } = useUser();
-  const { signOut } = useClerk();
   const { 
     chats, 
     currentChatId, 
@@ -139,23 +136,16 @@ export function ChatSidebar({ isOpen = true, onClose, onToggle, collapsed = fals
           <div className="flex items-center justify-between">
             <div className="flex items-center min-w-0 flex-1">
               <div className="mr-3 shrink-0">
-                <UserButton 
-                  appearance={{
-                    elements: {
-                      avatarBox: "w-10 h-10 rounded-lg border border-white/20",
-                      userButtonPopoverCard: "bg-black/20 backdrop-blur-sm border-white/20",
-                      userButtonPopoverActionButton: "text-white hover:bg-white/10",
-                      userButtonPopoverFooter: "hidden"
-                    }
-                  }}
-                />
+                <div className="w-10 h-10 rounded-lg border border-white/20 bg-black/30 flex items-center justify-center">
+                  <User className="w-5 h-5 text-white" />
+                </div>
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-white text-sm font-medium truncate">
-                  {user?.firstName || 'Пользователь'}
+                  Пользователь
                 </p>
                 <p className="text-white/60 text-xs truncate">
-                  {user?.emailAddresses[0]?.emailAddress}
+                  Radon AGI
                 </p>
               </div>
             </div>
