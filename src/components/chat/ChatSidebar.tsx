@@ -57,8 +57,8 @@ export function ChatSidebar({ isOpen = true, onClose }: ChatSidebarProps) {
   return (
     <div className={cn(
       "bg-black/10 backdrop-blur-sm border-r border-white/20 flex flex-col h-full transition-all duration-300",
-      "md:w-56 md:relative",
-      isOpen ? "fixed inset-y-0 left-0 w-80 z-50" : "hidden md:flex"
+      "md:w-56 md:relative md:flex",
+      isOpen ? "fixed inset-y-0 left-0 w-80 z-50" : "hidden"
     )}>
       {/* Header */}
       <div className="p-3 border-b border-white/20">
