@@ -141,8 +141,8 @@ export function DemoChat() {
         </div>
 
         {/* Input */}
-        <div className="p-6 border-t border-white/20">
-          <div className="flex space-x-3">
+        <div className="p-4 sm:p-6 border-t border-white/20">
+          <div className="flex flex-col sm:flex-row gap-3">
             <input
               type="text"
               value={input}
@@ -150,12 +150,12 @@ export function DemoChat() {
               onKeyPress={handleKeyPress}
               placeholder="Введите ваше сообщение..."
               disabled={isLoading}
-              className="flex-1 px-4 py-3 rounded-lg bg-black/20 border border-white/20 text-white placeholder:text-white/60 focus:border-white/40 focus:outline-none disabled:opacity-50"
+              className="flex-1 px-4 py-3 rounded-lg bg-black/20 border border-white/20 text-white placeholder:text-white/60 focus:border-white/40 focus:outline-none disabled:opacity-50 min-h-[44px]"
             />
             <Button
               onClick={handleSendMessage}
               disabled={!input.trim() || isLoading}
-              className="bg-black/30 hover:bg-black/40 backdrop-blur-sm border border-white/20 text-white px-6"
+              className="bg-black/30 hover:bg-black/40 backdrop-blur-sm border border-white/20 text-white px-6 min-h-[44px] min-w-[44px] sm:w-auto"
             >
               {isLoading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />

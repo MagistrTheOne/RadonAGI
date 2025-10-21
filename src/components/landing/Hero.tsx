@@ -109,7 +109,7 @@ export function Hero() {
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-black/30 hover:bg-black/40 backdrop-blur-sm border border-white/20 text-white py-3 text-lg"
+                    className="w-full bg-black/30 hover:bg-black/40 backdrop-blur-sm border border-white/20 text-white py-4 text-lg min-h-[56px]"
                   >
                     {isSubmitting ? (
                       <div className="flex items-center justify-center">
@@ -132,7 +132,7 @@ export function Hero() {
           {/* Demo Button */}
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-20">
             <Link href="#demo">
-              <Button size="lg" className="bg-black/30 hover:bg-black/40 backdrop-blur-sm border border-white/20 text-white px-8 py-4 text-lg group">
+              <Button size="lg" className="bg-black/30 hover:bg-black/40 backdrop-blur-sm border border-white/20 text-white px-8 py-4 text-lg group min-h-[56px] w-full sm:w-auto">
                 <MessageSquare className="w-5 h-5 mr-2" />
                 Протестировать возможности
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />

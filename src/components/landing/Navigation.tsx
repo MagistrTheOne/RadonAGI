@@ -54,9 +54,9 @@ export function Navigation() {
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 rounded-lg bg-black/20 hover:bg-black/30 border border-white/20 text-white"
+              className="p-3 rounded-lg bg-black/20 hover:bg-black/30 border border-white/20 text-white min-h-[44px] min-w-[44px] flex items-center justify-center"
             >
-              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>
@@ -69,19 +69,19 @@ export function Navigation() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="block px-3 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-md"
+                  className="block px-4 py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-md min-h-[44px] flex items-center"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}
                 </Link>
               ))}
               <div className="pt-2 border-t border-white/20">
-                <div className="px-3 py-2">
+                <div className="px-4 py-3 min-h-[44px] flex items-center">
                   <ThemeToggle />
                 </div>
                 <Link 
                   href="#demo" 
-                  className="block px-3 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-md"
+                  className="block px-4 py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-md min-h-[44px] flex items-center"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Демо
