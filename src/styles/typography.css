@@ -1,0 +1,160 @@
+/* Typography System for Radon AGI */
+
+/* Font Weights */
+.font-thin { font-weight: 100; }
+.font-extralight { font-weight: 200; }
+.font-light { font-weight: 300; }
+.font-normal { font-weight: 400; }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.font-extrabold { font-weight: 800; }
+.font-black { font-weight: 900; }
+
+/* Text Sizes - Mobile First */
+.text-xs { font-size: 0.75rem; line-height: 1rem; }      /* 12px */
+.text-sm { font-size: 0.875rem; line-height: 1.25rem; } /* 14px */
+.text-base { font-size: 1rem; line-height: 1.5rem; }    /* 16px */
+.text-lg { font-size: 1.125rem; line-height: 1.75rem; } /* 18px */
+.text-xl { font-size: 1.25rem; line-height: 1.75rem; }  /* 20px */
+.text-2xl { font-size: 1.5rem; line-height: 2rem; }    /* 24px */
+.text-3xl { font-size: 1.875rem; line-height: 2.25rem; } /* 30px */
+.text-4xl { font-size: 2.25rem; line-height: 2.5rem; }  /* 36px */
+.text-5xl { font-size: 3rem; line-height: 1; }          /* 48px */
+.text-6xl { font-size: 3.75rem; line-height: 1; }       /* 60px */
+.text-7xl { font-size: 4.5rem; line-height: 1; }        /* 72px */
+.text-8xl { font-size: 6rem; line-height: 1; }           /* 96px */
+.text-9xl { font-size: 8rem; line-height: 1; }           /* 128px */
+
+/* Responsive Typography */
+@media (min-width: 640px) {
+  .sm\:text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+  .sm\:text-base { font-size: 1rem; line-height: 1.5rem; }
+  .sm\:text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+  .sm\:text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+  .sm\:text-2xl { font-size: 1.5rem; line-height: 2rem; }
+  .sm\:text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+  .sm\:text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+  .sm\:text-5xl { font-size: 3rem; line-height: 1; }
+  .sm\:text-6xl { font-size: 3.75rem; line-height: 1; }
+  .sm\:text-7xl { font-size: 4.5rem; line-height: 1; }
+  .sm\:text-8xl { font-size: 6rem; line-height: 1; }
+  .sm\:text-9xl { font-size: 8rem; line-height: 1; }
+}
+
+@media (min-width: 768px) {
+  .md\:text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+  .md\:text-base { font-size: 1rem; line-height: 1.5rem; }
+  .md\:text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+  .md\:text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+  .md\:text-2xl { font-size: 1.5rem; line-height: 2rem; }
+  .md\:text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+  .md\:text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+  .md\:text-5xl { font-size: 3rem; line-height: 1; }
+  .md\:text-6xl { font-size: 3.75rem; line-height: 1; }
+  .md\:text-7xl { font-size: 4.5rem; line-height: 1; }
+  .md\:text-8xl { font-size: 6rem; line-height: 1; }
+  .md\:text-9xl { font-size: 8rem; line-height: 1; }
+}
+
+@media (min-width: 1024px) {
+  .lg\:text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+  .lg\:text-base { font-size: 1rem; line-height: 1.5rem; }
+  .lg\:text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+  .lg\:text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+  .lg\:text-2xl { font-size: 1.5rem; line-height: 2rem; }
+  .lg\:text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+  .lg\:text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+  .lg\:text-5xl { font-size: 3rem; line-height: 1; }
+  .lg\:text-6xl { font-size: 3.75rem; line-height: 1; }
+  .lg\:text-7xl { font-size: 4.5rem; line-height: 1; }
+  .lg\:text-8xl { font-size: 6rem; line-height: 1; }
+  .lg\:text-9xl { font-size: 8rem; line-height: 1; }
+}
+
+/* Text Hierarchy Classes */
+.heading-1 {
+  @apply text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight;
+}
+
+.heading-2 {
+  @apply text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight;
+}
+
+.heading-3 {
+  @apply text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight;
+}
+
+.heading-4 {
+  @apply text-xl md:text-2xl lg:text-3xl font-semibold tracking-tight;
+}
+
+.heading-5 {
+  @apply text-lg md:text-xl lg:text-2xl font-medium tracking-tight;
+}
+
+.heading-6 {
+  @apply text-base md:text-lg lg:text-xl font-medium tracking-tight;
+}
+
+.body-large {
+  @apply text-lg md:text-xl lg:text-2xl font-normal leading-relaxed;
+}
+
+.body-medium {
+  @apply text-base md:text-lg lg:text-xl font-normal leading-relaxed;
+}
+
+.body-small {
+  @apply text-sm md:text-base lg:text-lg font-normal leading-relaxed;
+}
+
+.caption {
+  @apply text-xs md:text-sm lg:text-base font-normal leading-relaxed;
+}
+
+/* Special Typography */
+.hero-title {
+  @apply text-5xl md:text-7xl lg:text-8xl font-black tracking-tight;
+}
+
+.hero-subtitle {
+  @apply text-xl md:text-2xl lg:text-3xl font-light leading-relaxed;
+}
+
+.card-title {
+  @apply text-xl md:text-2xl font-semibold tracking-tight;
+}
+
+.card-subtitle {
+  @apply text-sm md:text-base font-medium text-white/80;
+}
+
+.button-text {
+  @apply text-sm md:text-base font-medium tracking-wide;
+}
+
+.nav-text {
+  @apply text-sm md:text-base font-medium tracking-wide;
+}
+
+/* Text Colors */
+.text-primary { color: #ffffff; }
+.text-secondary { color: rgba(255, 255, 255, 0.8); }
+.text-tertiary { color: rgba(255, 255, 255, 0.6); }
+.text-quaternary { color: rgba(255, 255, 255, 0.4); }
+
+/* Text Utilities */
+.text-balance { text-wrap: balance; }
+.text-pretty { text-wrap: pretty; }
+.text-nowrap { white-space: nowrap; }
+.text-break { word-break: break-word; }
+.text-clip { text-overflow: ellipsis; }
+
+/* Letter Spacing */
+.tracking-tighter { letter-spacing: -0.05em; }
+.tracking-tight { letter-spacing: -0.025em; }
+.tracking-normal { letter-spacing: 0em; }
+.tracking-wide { letter-spacing: 0.025em; }
+.tracking-wider { letter-spacing: 0.05em; }
+.tracking-widest { letter-spacing: 0.1em; }

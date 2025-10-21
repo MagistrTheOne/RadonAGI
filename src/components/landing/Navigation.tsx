@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Brain, Menu, X, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 
 export function Navigation() {
   const { user } = useUser();
@@ -50,6 +51,7 @@ export function Navigation() {
 
           {/* Auth Section */}
           <div className="hidden md:flex items-center space-x-4">
+            <ThemeToggle />
             {user ? (
               <>
                 <Link href="/chat">
