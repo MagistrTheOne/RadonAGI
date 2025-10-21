@@ -15,7 +15,7 @@ export const MessageBubble = memo(function MessageBubble({ message }: MessageBub
   const cleanContent = message.content.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
 
   return (
-    <div className="w-full px-4 py-3 animate-in fade-in slide-in-from-bottom-2 duration-500">
+    <div className="w-full px-2 md:px-4 py-2 md:py-3 animate-in fade-in slide-in-from-bottom-2 duration-500">
       <div className={cn(
         "flex gap-3 items-start",
         isUser ? "justify-end" : "justify-start"

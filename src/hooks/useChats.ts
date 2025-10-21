@@ -46,6 +46,7 @@ export function useChats() {
 
   const createChat = useCallback(async (title?: string) => {
     try {
+      setIsLoading(true);
       const requestBody = { title: title || 'New Chat' };
       console.log('Creating chat with:', requestBody);
       
@@ -69,13 +70,16 @@ export function useChats() {
       console.log('Create chat data:', data);
       const newChat = data.chat;
       addChat(newChat);
+      clearError();
       return newChat;
     } catch (err: any) {
       console.error('Create chat error:', err);
       setError(err.message || 'Failed to create chat');
       throw err;
+    } finally {
+      setIsLoading(false);
     }
-  }, [addChat, setError]);
+  }, [addChat, setError, setIsLoading, clearError]);
 
   const deleteChat = useCallback(async (id: string) => {
     try {

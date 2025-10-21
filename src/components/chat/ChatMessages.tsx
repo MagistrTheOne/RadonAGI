@@ -35,7 +35,7 @@ export function ChatMessages({ messages, isLoading }: ChatMessagesProps) {
 
   return (
       <ScrollArea ref={scrollAreaRef} className="flex-1">
-        <div className="w-full pt-4 pb-28 relative bg-[#0f0f0f]">
+        <div className="w-full pt-2 md:pt-4 pb-20 md:pb-28 relative bg-[#0f0f0f]">
           <div className="relative z-10">
             {messages.length === 0 && !isLoading && (
               <div className="flex items-center justify-center h-full">
