@@ -6,6 +6,7 @@ import { useChats } from '@/hooks/useChats';
 import { Button } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
 import { useChatStore } from '@/store/chatStore';
+import { cn } from '@/lib/utils';
 
 // Lazy load components
 const ChatSidebar = lazy(() => import('@/components/chat/ChatSidebar').then(m => ({ default: m.ChatSidebar })));
@@ -17,6 +18,12 @@ export default function ChatPage() {
   const { currentChatId } = useChats();
   const { messages, isLoading, error, sendMessage, loadChat } = useChat(currentChatId || undefined);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('sidebarCollapsed') === 'true';
+    }
+    return false;
+  });
 
   // Load chat messages when currentChatId changes
   useEffect(() => {
@@ -28,14 +35,26 @@ export default function ChatPage() {
     }
   }, [currentChatId, loadChat]);
 
+  // Save sidebar state to localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('sidebarCollapsed', sidebarCollapsed.toString());
+    }
+  }, [sidebarCollapsed]);
+
   return (
     <div className="flex h-screen text-white bg-[#0f0f0f]">
       {/* Desktop Sidebar */}
-      <div className="hidden md:flex md:w-80 md:flex-col">
+      <div className={cn(
+        "hidden md:flex md:flex-col transition-all duration-300 ease-in-out",
+        sidebarCollapsed ? "md:w-0 md:overflow-hidden" : "md:w-80"
+      )}>
         <Suspense fallback={<div className="w-full h-full bg-black/10 backdrop-blur-sm border-r border-white/20 animate-pulse" />}>
           <ChatSidebar 
-            isOpen={true} 
-            onClose={() => {}} 
+            isOpen={!sidebarCollapsed} 
+            onClose={() => setSidebarCollapsed(true)}
+            onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+            collapsed={sidebarCollapsed}
           />
         </Suspense>
       </div>
@@ -54,14 +73,19 @@ export default function ChatPage() {
           <Suspense fallback={<div className="w-full h-full bg-black/10 backdrop-blur-sm border-r border-white/20 animate-pulse" />}>
             <ChatSidebar 
               isOpen={sidebarOpen} 
-              onClose={() => setSidebarOpen(false)} 
+              onClose={() => setSidebarOpen(false)}
+              onToggle={() => setSidebarOpen(!sidebarOpen)}
+              collapsed={false}
             />
           </Suspense>
         </div>
       )}
       
       {/* Main Content */}
-      <main className="flex-1 flex flex-col min-w-0 relative">
+      <main className={cn(
+        "flex-1 flex flex-col min-w-0 relative transition-all duration-300 ease-in-out",
+        sidebarCollapsed ? "md:ml-0" : "md:ml-0"
+      )}>
         {/* Mobile Header with Burger */}
         <div className="md:hidden flex items-center justify-between p-3 border-b border-white/20 bg-black/20 backdrop-blur-sm">
           <button
@@ -77,7 +101,9 @@ export default function ChatPage() {
         {/* Desktop Header */}
         <div className="hidden md:block">
           <Suspense fallback={<div className="p-4 border-b border-white/20 bg-black/10 backdrop-blur-sm animate-pulse" />}>
-            <ChatHeader onMenuClick={() => {}} />
+            <ChatHeader 
+              onMenuClick={() => setSidebarCollapsed(!sidebarCollapsed)} 
+            />
           </Suspense>
         </div>
 

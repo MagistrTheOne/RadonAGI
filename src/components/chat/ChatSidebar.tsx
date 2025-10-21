@@ -6,15 +6,17 @@ import { useChats } from '@/hooks/useChats';
 import { useChatStore } from '@/store/chatStore';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Plus, MessageSquare, Trash2, LogOut, X } from 'lucide-react';
+import { Plus, MessageSquare, Trash2, LogOut, X, Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ChatSidebarProps {
   isOpen?: boolean;
   onClose?: () => void;
+  onToggle?: () => void;
+  collapsed?: boolean;
 }
 
-export function ChatSidebar({ isOpen = true, onClose }: ChatSidebarProps) {
+export function ChatSidebar({ isOpen = true, onClose, onToggle, collapsed = false }: ChatSidebarProps) {
   const { user } = useUser();
   const { signOut } = useClerk();
   const { 
@@ -64,16 +66,29 @@ export function ChatSidebar({ isOpen = true, onClose }: ChatSidebarProps) {
       <div className="p-3 border-b border-white/20">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-white font-semibold text-sm">Чаты</h2>
-          {onClose && (
-            <Button
-              onClick={onClose}
-              variant="ghost"
-              size="sm"
-              className="md:hidden p-1 h-6 w-6 text-white/80 hover:text-white hover:bg-white/10"
-            >
-              <X className="w-4 h-4" />
-            </Button>
-          )}
+          <div className="flex items-center gap-2">
+            {onToggle && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onToggle}
+                className="hidden md:flex p-1 h-6 w-6 text-white/80 hover:text-white hover:bg-white/10"
+                title={collapsed ? "Показать сайдбар" : "Скрыть сайдбар"}
+              >
+                <Menu className="w-4 h-4" />
+              </Button>
+            )}
+            {onClose && (
+              <Button
+                onClick={onClose}
+                variant="ghost"
+                size="sm"
+                className="md:hidden p-1 h-6 w-6 text-white/80 hover:text-white hover:bg-white/10"
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            )}
+          </div>
         </div>
         <Button
           onClick={handleNewChat}
