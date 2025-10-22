@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Navigation } from '@/components/landing/Navigation';
 import { 
   TrendingUp, 
   DollarSign, 
@@ -91,9 +92,12 @@ const team = [
 export default function InvestPage() {
   return (
     <div className="min-h-screen bg-[#0f0f0f] text-white">
+      {/* Navigation */}
+      <Navigation />
+      
       {/* Hero Section */}
-      <section className="relative overflow-hidden w-full">
-        <div className="w-full px-4 sm:px-6 lg:px-8 py-32 lg:py-48">
+      <section className="relative overflow-hidden w-full pt-20">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-8 tracking-tight">
               Инвестиции в Radon AGI
@@ -103,11 +107,30 @@ export default function InvestPage() {
               Инвестируйте в будущее технологий.
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
-              <Button size="lg" className="bg-black/30 hover:bg-black/40 backdrop-blur-sm border border-white/20 text-white px-8 py-4 text-lg">
+              <Button 
+                size="lg" 
+                className="bg-black/30 hover:bg-black/40 backdrop-blur-sm border border-white/20 text-white px-8 py-4 text-lg min-h-[56px] w-full sm:w-auto"
+                onClick={() => {
+                  const email = 'maxonyushko71@gmail.com';
+                  const subject = 'Инвестиции в Radon AGI';
+                  const body = 'Здравствуйте! Меня интересуют возможности инвестирования в проект Radon AGI. Пожалуйста, свяжитесь со мной для обсуждения деталей.';
+                  window.open(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
+                }}
+              >
                 <DollarSign className="w-5 h-5 mr-2" />
                 Инвестировать сейчас
               </Button>
-              <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 px-8 py-4 text-lg">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-white/30 text-white hover:bg-white/10 px-8 py-4 text-lg min-h-[56px] w-full sm:w-auto"
+                onClick={() => {
+                  const email = 'maxonyushko71@gmail.com';
+                  const subject = 'Вопрос по проекту Radon AGI';
+                  const body = 'Здравствуйте! У меня есть вопросы по проекту Radon AGI. Пожалуйста, свяжитесь со мной.';
+                  window.open(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
+                }}
+              >
                 <Mail className="w-5 h-5 mr-2" />
                 Связаться с нами
               </Button>
@@ -117,7 +140,7 @@ export default function InvestPage() {
       </section>
 
       {/* Investment Tiers */}
-      <section className="py-20">
+      <section className="py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">
@@ -146,7 +169,15 @@ export default function InvestPage() {
                   ))}
                 </ul>
                 
-                <Button className="w-full bg-black/30 hover:bg-black/40 backdrop-blur-sm border border-white/20 text-white">
+                <Button 
+                  className="w-full bg-black/30 hover:bg-black/40 backdrop-blur-sm border border-white/20 text-white min-h-[44px]"
+                  onClick={() => {
+                    const email = 'maxonyushko71@gmail.com';
+                    const subject = `Инвестиции в Radon AGI - ${tier.name}`;
+                    const body = `Здравствуйте! Меня интересует инвестиционный план "${tier.name}" (${tier.amount}). Пожалуйста, свяжитесь со мной для обсуждения деталей.`;
+                    window.open(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
+                  }}
+                >
                   Выбрать план
                 </Button>
               </Card>
@@ -156,7 +187,7 @@ export default function InvestPage() {
       </section>
 
       {/* Roadmap */}
-      <section className="py-20 bg-black/10">
+      <section className="py-16 lg:py-24 bg-black/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">
@@ -192,7 +223,7 @@ export default function InvestPage() {
       </section>
 
       {/* Team */}
-      <section className="py-20">
+      <section className="py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">
@@ -225,7 +256,7 @@ export default function InvestPage() {
       </section>
 
       {/* Contact */}
-      <section className="py-20 bg-black/10">
+      <section className="py-16 lg:py-24 bg-black/10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl font-bold text-white mb-8">
             Готовы инвестировать?
@@ -234,14 +265,10 @@ export default function InvestPage() {
             Свяжитесь с нами для обсуждения условий инвестирования
           </p>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
             <div className="flex items-center justify-center">
               <Mail className="w-6 h-6 text-white mr-3" />
               <span className="text-white">maxonyushko71@gmail.com</span>
-            </div>
-            <div className="flex items-center justify-center">
-              <Phone className="w-6 h-6 text-white mr-3" />
-              <span className="text-white">+7 (XXX) XXX-XX-XX</span>
             </div>
             <div className="flex items-center justify-center">
               <MapPin className="w-6 h-6 text-white mr-3" />
@@ -250,12 +277,21 @@ export default function InvestPage() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <Button size="lg" className="bg-black/30 hover:bg-black/40 backdrop-blur-sm border border-white/20 text-white px-8 py-4 text-lg">
+            <Button 
+              size="lg" 
+              className="bg-black/30 hover:bg-black/40 backdrop-blur-sm border border-white/20 text-white px-8 py-4 text-lg min-h-[56px] w-full sm:w-auto"
+              onClick={() => {
+                const email = 'maxonyushko71@gmail.com';
+                const subject = 'Инвестиции в Radon AGI - Обсуждение условий';
+                const body = 'Здравствуйте! Меня интересуют условия инвестирования в проект Radon AGI. Пожалуйста, свяжитесь со мной для обсуждения деталей и возможностей сотрудничества.';
+                window.open(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
+              }}
+            >
               <Mail className="w-5 h-5 mr-2" />
               Написать нам
             </Button>
             <Link href="/">
-              <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 px-8 py-4 text-lg">
+              <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 px-8 py-4 text-lg min-h-[56px] w-full sm:w-auto">
                 <ArrowRight className="w-5 h-5 mr-2" />
                 Вернуться на главную
               </Button>

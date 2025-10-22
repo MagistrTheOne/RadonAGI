@@ -9,11 +9,9 @@ import Link from 'next/link';
 
 export default function WhitelistPage() {
   const [formData, setFormData] = useState({
-    companyName: '',
-    contactName: '',
+    name: '',
     email: '',
-    phone: '',
-    message: ''
+    company: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -33,7 +31,7 @@ export default function WhitelistPage() {
 
       if (response.ok) {
         setIsSubmitted(true);
-        setFormData({ companyName: '', contactName: '', email: '', phone: '', message: '' });
+        setFormData({ name: '', email: '', company: '' });
       } else {
         throw new Error('Failed to submit');
       }
@@ -109,7 +107,7 @@ export default function WhitelistPage() {
       </nav>
 
       {/* Main Content */}
-      <div className="py-20 lg:py-32">
+      <div className="py-16 lg:py-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8">
@@ -120,43 +118,25 @@ export default function WhitelistPage() {
             </p>
           </div>
 
-          <div className="bg-black/20 backdrop-blur-sm border border-white/20 rounded-3xl p-12">
-            <form onSubmit={handleSubmit} className="space-y-8">
+          <div className="bg-black/20 backdrop-blur-sm border border-white/20 rounded-3xl p-8 lg:p-12">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-white font-semibold mb-3">
-                    <Building className="w-5 h-5 inline mr-2" />
-                    Название компании *
-                  </label>
-                  <Input
-                    type="text"
-                    name="companyName"
-                    value={formData.companyName}
-                    onChange={handleInputChange}
-                    required
-                    className="bg-black/20 backdrop-blur-sm border-white/20 text-white placeholder:text-white/60 focus:border-white/40"
-                    placeholder="Введите название вашей компании"
-                  />
-                </div>
-
                 <div>
                   <label className="block text-white font-semibold mb-3">
                     <User className="w-5 h-5 inline mr-2" />
-                    Контактное лицо *
+                    Ваше имя *
                   </label>
                   <Input
                     type="text"
-                    name="contactName"
-                    value={formData.contactName}
+                    name="name"
+                    value={formData.name}
                     onChange={handleInputChange}
                     required
-                    className="bg-black/20 backdrop-blur-sm border-white/20 text-white placeholder:text-white/60 focus:border-white/40"
-                    placeholder="Ваше имя и должность"
+                    className="bg-black/20 backdrop-blur-sm border-white/20 text-white placeholder:text-white/60 focus:border-white/40 min-h-[44px]"
+                    placeholder="Введите ваше имя"
                   />
                 </div>
-              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-white font-semibold mb-3">
                     <Mail className="w-5 h-5 inline mr-2" />
@@ -168,39 +148,24 @@ export default function WhitelistPage() {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    className="bg-black/20 backdrop-blur-sm border-white/20 text-white placeholder:text-white/60 focus:border-white/40"
+                    className="bg-black/20 backdrop-blur-sm border-white/20 text-white placeholder:text-white/60 focus:border-white/40 min-h-[44px]"
                     placeholder="your@company.com"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-white font-semibold mb-3">
-                    <MessageSquare className="w-5 h-5 inline mr-2" />
-                    Телефон
-                  </label>
-                  <Input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    className="bg-black/20 backdrop-blur-sm border-white/20 text-white placeholder:text-white/60 focus:border-white/40"
-                    placeholder="+7 (999) 123-45-67"
                   />
                 </div>
               </div>
 
               <div>
                 <label className="block text-white font-semibold mb-3">
-                  <MessageSquare className="w-5 h-5 inline mr-2" />
-                  Сообщение
+                  <Building className="w-5 h-5 inline mr-2" />
+                  Компания (необязательно)
                 </label>
-                <Textarea
-                  name="message"
-                  value={formData.message}
+                <Input
+                  type="text"
+                  name="company"
+                  value={formData.company}
                   onChange={handleInputChange}
-                  rows={4}
-                  className="bg-black/20 backdrop-blur-sm border-white/20 text-white placeholder:text-white/60 focus:border-white/40 resize-none"
-                  placeholder="Расскажите о ваших потребностях в ИИ, размере компании, ожиданиях от Radon AGI..."
+                  className="bg-black/20 backdrop-blur-sm border-white/20 text-white placeholder:text-white/60 focus:border-white/40 min-h-[44px]"
+                  placeholder="Название вашей компании"
                 />
               </div>
 
@@ -208,7 +173,7 @@ export default function WhitelistPage() {
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-black/30 hover:bg-black/40 backdrop-blur-sm border border-white/20 text-white px-12 py-4 text-lg disabled:opacity-50"
+                  className="bg-black/30 hover:bg-black/40 backdrop-blur-sm border border-white/20 text-white px-12 py-4 text-lg disabled:opacity-50 min-h-[56px] w-full sm:w-auto"
                 >
                   {isSubmitting ? (
                     <>
